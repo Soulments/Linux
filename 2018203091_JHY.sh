@@ -60,10 +60,10 @@ main()
         draw_chars $(( (${_screen['cols']} / 7 * 5) - ${#signin} )) $(( (${_screen['rows']} / 20) * 16 )) "$signin" $c2
         draw_chars $(( (${_screen['cols']} / 7 * 3) - ${#exit} )) $(( (${_screen['rows']} / 20) * 18 )) "$exit" $c3
         draw_chars $(( (${_screen['cols']} / 7 * 5) - ${#signout} )) $(( (${_screen['rows']} / 20) * 18 )) "$signout" $c4
-        read -n1 input
+        read -n1 -s input
         if [[ $input = $ESC ]]
         then
-            read -n2 x
+            read -n2 -s x
             if [[ $x == ${key_map['UP']} ]]
             then
                 if [[ $index == 3 || $index == 4 ]]
@@ -142,10 +142,10 @@ signin_func()
         draw_chars $(( ${pr_left} - ( ${#pw} / 2 ) )) $(( (${_screen['rows']} / 20) * 11 )) "$pw" $c3
         draw_chars $(( ${pr_left} - ( ${#signin} / 2) )) $(( (${_screen['rows']} / 20) * 17 )) "$signin" $c4
         draw_chars $(( ${pr_right} - ( ${#exit} / 2) )) $(( (${_screen['rows']} / 20) * 17 )) "$exit" $c5
-        read -n1 input
+        read -n1 -s input
         if [[ $input = $ESC ]]
         then
-            read -n2 x
+            read -n2 -s x
             if [[ $x == ${key_map['UP']} ]]
             then
                 if [[ $index == 4 || $index == 5 ]]
@@ -200,6 +200,10 @@ signin_func()
                 local pw=$inp_pw
             elif [[ $index == 4 ]]
             then user_add
+            elif [[ $index == 5 ]]
+            then
+                clear
+                exit
             else continue
             fi
             if [[ $en == 1 || $index == 4 || $index == 5 ]]
@@ -240,10 +244,10 @@ signout_func()
         draw_chars $(( ${half_width} - (${#pw} / 2) )) $(( (${_screen['rows']} / 20) * 11 )) "$pw" $c2
         draw_chars $(( ${pr_left} - (${#signout} / 2) )) $(( (${_screen['rows']} / 20) * 16 )) "$signout" $c3
         draw_chars $(( ${pr_right} - (${#exit} / 2) )) $(( (${_screen['rows']} / 20) * 16 )) "$exit" $c4
-        read -n1 input
+        read -n1 -s input
         if [[ $input = $ESC ]]
         then
-            read -n2 x
+            read -n2 -s x
             if [[ $x == ${key_map['UP']} ]]
             then
                 if [[ $index == 4 ]]
@@ -288,6 +292,10 @@ signout_func()
                 local pw=$inp_pw
             elif [[ $index == 3 ]]
             then user_del
+            elif [[ $index == 4 ]]
+            then
+                clear
+                exit
             else continue
             fi
             if [[ $index == 3 || $index == 4 ]]
@@ -338,10 +346,10 @@ login_func()
         draw_chars $(( ${half_width} - (${#pw} / 2) )) $(( (${_screen['rows']} / 20) * 11 )) "$pw" $c2
         draw_chars $(( ${pr_left} - (${#login} / 2) )) $(( (${_screen['rows']} / 20) * 16 )) "$login" $c3
         draw_chars $(( ${pr_right} - (${#exit} / 2) )) $(( (${_screen['rows']} / 20) * 16 )) "$exit" $c4
-        read -n1 input
+        read -n1 -s input
         if [[ $input = $ESC ]]
         then
-            read -n2 x
+            read -n2 -s x
             if [[ $x == ${key_map['UP']} ]]
             then
                 if [[ $index == 4 ]]
@@ -417,7 +425,7 @@ ch_dup()
 {
     if [[ -z $inp_id ]]
     then return
-    elif [[ -z `grep ${inp_id} userdata.txt` ]]
+    elif [[ -n `grep ${inp_id} userdata.txt` ]]
     then draw_chars $(( $half_width - 9 )) $(( (${_screen['rows']} / 20) * 19 )) "    같은 ID 존재    " 44
     else draw_chars $(( $half_width - 9 )) $(( (${_screen['rows']} / 20) * 19 )) "    회원 가입 가능    " 44
     fi
