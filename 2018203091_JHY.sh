@@ -3,40 +3,36 @@
 declare -A -x _screen=(
     ['rows']=$(tput lines)
     ['cols']=$(tput cols)
-)
+) #행 열 정의
 declare -A -x key_map=(
     ['UP']='[A'
     ['DOWN']='[B'
     ['LEFT']='[D'
     ['RIGHT']='[C'
-)
-declare -g -x ESC=$( printf '\033')
-declare -A -x color_map=(
-    ['red']='41'
-    ['blue']='44'
-)
-declare -g -x half_width=$(( ${_screen['cols']} / 2 ))
-declare -g -x half_height=$(( ${_screen['rows']} / 2 ))
-declare -x file="userdata.txt"
-draw_chars()
+) #방향키 정의
+declare -g -x ESC=$( printf '\033') #ESC 입력 정의
+declare -g -x half_width=$(( ${_screen['cols']} / 2 )) #행 절반
+declare -g -x half_height=$(( ${_screen['rows']} / 2 )) #열 절반
+declare -x file="userdata.txt" #회원목록 정의
+draw_chars() #출력용 함수
 {
-    local x=$1
-    local y=$2
-    local s="$3"
-    local c=$4
+    local x=$1 #x좌표
+    local y=$2 #y좌표
+    local s="$3" #입력 텍스트
+    local c=$4 #색상
 
     printf "\033[${c}m\033[${y};${x}H${s}\033[0m"
 }
 
-main()
+main() #시작 함수
 {
-    local index=0
+    local index=0 #선택된 인덱스
     local join="     JOIN     "
     local signin="    SIGN IN   "
     local exit="     EXIT     "
     local signout="   SIGN OUT   "
-    local pr_left=$((${_screen['cols']} / 14 * 6))
-    local pr_right=$((${_screen['cols']} / 14 * 10))
+    local pr_left=$((${_screen['cols']} / 14 * 6)) #왼쪽 정렬용
+    local pr_right=$((${_screen['cols']} / 14 * 10)) #오른쪽 정렬용
     clear  
 
     while [ true ]
@@ -60,59 +56,51 @@ main()
         draw_chars $(( (${_screen['cols']} / 7 * 5) - ${#signin} )) $(( (${_screen['rows']} / 20) * 16 )) "$signin" $c2
         draw_chars $(( (${_screen['cols']} / 7 * 3) - ${#exit} )) $(( (${_screen['rows']} / 20) * 18 )) "$exit" $c3
         draw_chars $(( (${_screen['cols']} / 7 * 5) - ${#signout} )) $(( (${_screen['rows']} / 20) * 18 )) "$signout" $c4
-        read -n1 -s input
-        if [[ $input = $ESC ]]
+        read -n1 -s input #첫글자 입력
+        if [[ $input = $ESC ]] #방향키 입력 경우
         then
             read -n2 -s x
             if [[ $x == ${key_map['UP']} ]]
             then
                 if [[ $index == 3 || $index == 4 ]]
-                then
-                    index=$(( $index - 2 ))
+                then index=$(( $index - 2 ))
                 fi
             elif [[ $x == ${key_map['DOWN']} ]]
             then
                 if [[ $index == 1 || $index == 2 ]]
-                then
-                    index=$(( $index + 2 ))
+                then index=$(( $index + 2 ))
                 fi
             elif [[ $x == ${key_map['LEFT']} ]]
             then
                 if [[ $index == 2 || $index == 4 ]]
-                then
-                    index=$(( $index - 1 ))
+                then index=$(( $index - 1 ))
                 fi
             else
                 if [[ $index == 1 || $index == 3 ]]
-                then
-                    index=$(( $index + 1 ))
+                then index=$(( $index + 1 ))
                 fi
             fi
             if [[ $index == 0 ]]
-            then
-                index=1
+            then index=1
             fi
-        elif [[ $input = "" ]]
+        elif [[ $input = "" ]] #엔터 입력 경우
         then
             if [[ $index == 1 ]]
             then login_func
             elif [[ $index == 2 ]]
             then signin_func
             elif [[ $index == 3 ]]
-            then 
-                clear
-                exit
+            then end_func
             elif [[ $index == 4 ]]
             then signout_func
             else continue
             fi
-        else
-            continue
+        else continue
         fi
     done
 }
 
-signin_func()
+signin_func() #회원가입 함수(구조 main과 동일)
 {
     local index=0
     local id="        ID        "
@@ -149,42 +137,33 @@ signin_func()
             if [[ $x == ${key_map['UP']} ]]
             then
                 if [[ $index == 4 || $index == 5 ]]
-                then
-                    index=3
+                then index=3
                 elif [[ $index == 3 ]]
-                then
-                    index=1
+                then index=1
                 fi
             elif [[ $x == ${key_map['DOWN']} ]]
             then
                 if [[ $index == 1 || $index == 2 ]]
-                then
-                    index=3
+                then index=3
                 elif [[ $index == 3 ]]
-                then
-                    index=4
+                then index=4
                 fi
             elif [[ $x == ${key_map['LEFT']} ]]
             then
                 if [[ $index == 2 ]]
-                then
-                    index=1
+                then index=1
                 elif [[ $index == 5 ]]
-                then
-                    index=5
+                then index=5
                 fi
             else
                 if [[ $index == 1 ]]
-                then
-                    index=2
+                then index=2
                 elif [[ $index == 4 ]]
-                then
-                    index=5
+                then index=5
                 fi
             fi
             if [[ $index == 0 ]]
-            then
-                index=1
+            then index=1
             fi
         elif [[ $input = "" ]]
         then
@@ -201,18 +180,13 @@ signin_func()
             elif [[ $index == 4 ]]
             then user_add
             elif [[ $index == 5 ]]
-            then
-                clear
-                exit
+            then end_func
             else continue
             fi
             if [[ $en == 1 || $index == 4 || $index == 5 ]]
-            then
-                clear
-                exit
+            then end_func
             fi
-        else
-            continue
+        else continue
         fi
     done
 }
@@ -251,34 +225,28 @@ signout_func()
             if [[ $x == ${key_map['UP']} ]]
             then
                 if [[ $index == 4 ]]
-                then
-                    index=2
+                then index=2
                 fi
                 if [[ $index == 2 || $index == 3 ]]
-                then
-                    index=$(( $index - 1 ))
+                then index=$(( $index - 1 ))
                 fi
             elif [[ $x == ${key_map['DOWN']} ]]
             then
                 if [[ $index == 1 || $index == 2 ]]
-                then
-                    index=$(( $index + 1 ))
+                then index=$(( $index + 1 ))
                 fi
             elif [[ $x == ${key_map['LEFT']} ]]
             then
                 if [[ $index == 4 ]]
-                then
-                    index=3
+                then index=3
                 fi
             else
                 if [[ $index == 3 ]]
-                then
-                    index=4
+                then index=4
                 fi
             fi
             if [[ $index == 0 ]]
-            then
-                index=1
+            then index=1
             fi
         elif [[ $input = "" ]]
         then
@@ -293,18 +261,13 @@ signout_func()
             elif [[ $index == 3 ]]
             then user_del
             elif [[ $index == 4 ]]
-            then
-                clear
-                exit
+            then end_func
             else continue
             fi
             if [[ $index == 3 || $index == 4 ]]
-            then
-                clear
-                exit
+            then end_func
             fi
-        else
-            continue
+        else continue
         fi
     done
 }
@@ -353,34 +316,28 @@ login_func()
             if [[ $x == ${key_map['UP']} ]]
             then
                 if [[ $index == 4 ]]
-                then
-                    index=2
+                then index=2
                 fi
                 if [[ $index == 2 || $index == 3 ]]
-                then
-                    index=$(( $index - 1 ))
+                then index=$(( $index - 1 ))
                 fi
             elif [[ $x == ${key_map['DOWN']} ]]
             then
                 if [[ $index == 1 || $index == 2 ]]
-                then
-                    index=$(( $index + 1 ))
+                then index=$(( $index + 1 ))
                 fi
             elif [[ $x == ${key_map['LEFT']} ]]
             then
                 if [[ $index == 4 ]]
-                then
-                    index=3
+                then index=3
                 fi
             else
                 if [[ $index == 3 ]]
-                then
-                    index=4
+                then index=4
                 fi
             fi
             if [[ $index == 0 ]]
-            then
-                index=1
+            then index=1
             fi
         elif [[ $input = "" ]]
         then
@@ -399,12 +356,10 @@ login_func()
                 pw="        PW        "
                 index=0
             elif [[ $index == 4 ]]
-            then
-                clear
-                exit
+            then end_func
+            else continue
             fi
-        else
-            continue
+        else continue
         fi
     done
 }
@@ -461,11 +416,8 @@ user_del()
 user_add()
 {
     if [[ -z ${inp_id} || -n `grep "${inp_id}" userdata.txt` ]]
-    then
-        clear
-        exit
-    else
-        echo -e "${inp_id} ${inp_pw} 0 0" >> userdata.txt
+    then end_func
+    else echo -e "${inp_id} ${inp_pw} 0 0" >> userdata.txt
     fi
 }
 
@@ -508,6 +460,12 @@ color_set()
     elif [[ $index == 5 ]]
     then c5=41
     fi
+}
+
+end_func()
+{
+    clear
+    exit
 }
 
 if [ ! -e $file ]
