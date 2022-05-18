@@ -108,8 +108,8 @@ signin_func() #회원가입 함수(구조 main과 동일)
     local dup_ch="  Duplicate check  "
     local signin="  SIGN IN  "
     local exit="   EXIT   "
-    local pr_left=$((${_screen['cols']} / 28 * 12))
-    local pr_right=$((${_screen['cols']} / 28 * 20))
+    local pr_left=$((${_screen['cols']} / 14 * 6))
+    local pr_right=$((${_screen['cols']} / 14 * 10))
     en=0
     clear
     
@@ -124,12 +124,12 @@ signin_func() #회원가입 함수(구조 main과 동일)
         draw_chars $(( $half_width - 16 )) 7 '|____/___\____|_| \_| |___|_| \_|' 0
         
         draw_chars $(( ${pr_left} - 9 )) $(( (${_screen['rows']} / 20) * 9 )) "                  " $c1
-        draw_chars $(( ${pr_left} - ( ${#id} / 2 ) )) $(( (${_screen['rows']} / 20) * 9 )) "$id" $c1
-        draw_chars $(( ${pr_right} - ( ${#dup_ch} / 2 ) )) $(( (${_screen['rows']} / 20) * 9 )) "$dup_ch" $c2
+        draw_chars $(( ${pr_left} - (${#id} / 2) )) $(( (${_screen['rows']} / 20) * 9 )) "$id" $c1
+        draw_chars $(( ${pr_right} - (${#dup_ch} / 2) )) $(( (${_screen['rows']} / 20) * 9 )) "$dup_ch" $c2
         draw_chars $(( ${pr_left} - 9)) $(( (${_screen['rows']} / 20) * 11 )) "                  " $c3
-        draw_chars $(( ${pr_left} - ( ${#pw} / 2 ) )) $(( (${_screen['rows']} / 20) * 11 )) "$pw" $c3
-        draw_chars $(( ${pr_left} - ( ${#signin} / 2) )) $(( (${_screen['rows']} / 20) * 17 )) "$signin" $c4
-        draw_chars $(( ${pr_right} - ( ${#exit} / 2) )) $(( (${_screen['rows']} / 20) * 17 )) "$exit" $c5
+        draw_chars $(( ${pr_left} - (${#pw} / 2) )) $(( (${_screen['rows']} / 20) * 11 )) "$pw" $c3
+        draw_chars $(( ${pr_left} - (${#signin} / 2) )) $(( (${_screen['rows']} / 20) * 17 )) "$signin" $c4
+        draw_chars $(( ${pr_right} - (${#exit} / 2) )) $(( (${_screen['rows']} / 20) * 17 )) "$exit" $c5
         read -n1 -s input
         if [[ $input = $ESC ]]
         then
@@ -198,8 +198,8 @@ signout_func()
     local pw="        PW        "
     local signout="  SIGN OUT  "
     local exit="   EXIT   "
-    local pr_left=$((${_screen['cols']} / 28 * 12))
-    local pr_right=$((${_screen['cols']} / 28 * 20))
+    local pr_left=$((${_screen['cols']} / 14 * 6))
+    local pr_right=$((${_screen['cols']} / 14 * 10))
     clear
     
     while [ true ]
